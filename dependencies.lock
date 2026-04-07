@@ -1,0 +1,24 @@
+dependencies:
+  espressif/esp_tinyusb:
+    dependencies: []
+    source:
+      path: C:\Users\kasum\MyProjects\xiao-esp32-s3-fido2-key\fido2-espidf-pio-proj\managed_components\espressif__esp_tinyusb
+      type: local
+    version: 2.1.1
+  espressif/tinyusb:
+    dependencies: []
+    source:
+      path: C:\Users\kasum\MyProjects\xiao-esp32-s3-fido2-key\fido2-espidf-pio-proj\managed_components\espressif__tinyusb
+      type: local
+    version: 0.19.0~2
+  idf:
+    source:
+      type: idf
+    version: 5.5.3
+direct_dependencies:
+- espressif/esp_tinyusb
+- espressif/tinyusb
+- idf
+manifest_hash: bf8ddf6e550c5bf2c798d157f81bd0ff2a0b1fd59dd17e92667b7613bd0cfcb6
+target: esp32s3
+version: 2.0.0
