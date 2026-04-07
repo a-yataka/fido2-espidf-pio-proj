@@ -1,48 +1,46 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "driver/gpio.h"
 #include "esp_log.h"
-#include "board_mode.h"
-#include "transport.h"
 
-static const char *TAG = "main";
+#define LED_GPIO    GPIO_NUM_43
+#define BUTTON_GPIO GPIO_NUM_1
+
+static const char *TAG = "button";
 
 void app_main(void)
 {
-    transport_mode_t selected_mode = board_detect_mode();
-    const transport_vtable_t *transport = NULL;
+    // LED: 出力
+    gpio_config_t led_conf = {
+        .pin_bit_mask = (1ULL << LED_GPIO),
+        .mode = GPIO_MODE_OUTPUT,
+        .pull_up_en = GPIO_PULLUP_DISABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .intr_type = GPIO_INTR_DISABLE
+    };
+    gpio_config(&led_conf);
 
-    if (selected_mode == TRANSPORT_MODE_USB_HID) {
-        ESP_LOGI(TAG, "Mode selected: USB HID");
-        transport = transport_usb_hid_get();
-    } else {
-        ESP_LOGI(TAG, "Mode selected: BLE");
-        transport = transport_ble_get();
-    }
-
-    if (!transport || !transport->init()) {
-        ESP_LOGE(TAG, "Transport init failed");
-        while (1) {
-            vTaskDelay(pdMS_TO_TICKS(1000));
-        }
-    }
-
-    uint8_t buf[64];
-    size_t len = 0;
+    // BUTTON: 入力 + 内部プルアップ
+    gpio_config_t button_conf = {
+        .pin_bit_mask = (1ULL << BUTTON_GPIO),
+        .mode = GPIO_MODE_INPUT,
+        .pull_up_en = GPIO_PULLUP_ENABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .intr_type = GPIO_INTR_DISABLE
+    };
+    gpio_config(&button_conf);
 
     while (1) {
-        transport->poll();
+        int level = gpio_get_level(BUTTON_GPIO);
 
-        if (transport->recv(buf, sizeof(buf), &len)) {
-            ESP_LOGI(TAG, "Received %u bytes in mode %d",
-                     (unsigned)len, (int)transport->mode());
-            transport->send(buf, len);
-        }
-
-        if (transport->mode() == TRANSPORT_MODE_BLE) {
-            // 今は未実装なので静かに待つだけ
-            vTaskDelay(pdMS_TO_TICKS(100));
+        if (level == 0) {
+            ESP_LOGI(TAG, "button pressed");
+            gpio_set_level(LED_GPIO, 1);
         } else {
-            vTaskDelay(pdMS_TO_TICKS(1));
+            ESP_LOGI(TAG, "button released");
+            gpio_set_level(LED_GPIO, 0);
         }
+
+        vTaskDelay(pdMS_TO_TICKS(50));
     }
 }
