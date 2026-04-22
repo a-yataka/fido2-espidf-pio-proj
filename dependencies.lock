@@ -1,15 +1,37 @@
 dependencies:
   espressif/esp_tinyusb:
-    dependencies: []
+    component_hash: fa0c96d7bdc3fe37383d735e2839a9007200a0b6bc039458d45d004b50146e81
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=5.0'
+    - name: espressif/tinyusb
+      registry_url: https://components.espressif.com
+      require: public
+      version: '>=0.17.0~2'
     source:
-      path: C:\Users\kasum\MyProjects\xiao-esp32-s3-fido2-key\fido2-espidf-pio-proj\managed_components\espressif__esp_tinyusb
-      type: local
+      registry_url: https://components.espressif.com/
+      type: service
+    targets:
+    - esp32s2
+    - esp32s3
+    - esp32p4
+    - esp32h4
     version: 2.1.1
   espressif/tinyusb:
-    dependencies: []
+    component_hash: 5ea9d3b6d6b0734a0a0b3491967aa0e1bece2974132294dbda5dd2839b247bfa
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=5.0'
     source:
-      path: C:\Users\kasum\MyProjects\xiao-esp32-s3-fido2-key\fido2-espidf-pio-proj\managed_components\espressif__tinyusb
-      type: local
+      registry_url: https://components.espressif.com
+      type: service
+    targets:
+    - esp32s2
+    - esp32s3
+    - esp32p4
+    - esp32h4
     version: 0.19.0~2
   idf:
     source:
@@ -17,8 +39,6 @@ dependencies:
     version: 5.5.3
 direct_dependencies:
 - espressif/esp_tinyusb
-- espressif/tinyusb
-- idf
-manifest_hash: bf8ddf6e550c5bf2c798d157f81bd0ff2a0b1fd59dd17e92667b7613bd0cfcb6
+manifest_hash: a18357aa201d5c9913ab836227bb8ca696ba73056bb59f4689f0676484b7eeff
 target: esp32s3
 version: 2.0.0
